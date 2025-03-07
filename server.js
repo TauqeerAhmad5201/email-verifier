@@ -64,12 +64,66 @@ app.post('/verify-email', async (req, res) => {
         const data = await response.json();
         console.log('API response data:', data);
 
-        if (data.data && data.data.result === 'deliverable') {
-            console.log('Email is valid');
-            res.json({ message: 'Email is valid', valid: true });
+        // Enhanced email verification status handling
+        if (data.data) {
+            // Prefer status over deprecated result field
+            const status = data.data.status || data.data.result;
+            const score = data.data.score || 0;
+            
+            let message, valid;
+            
+            switch(status) {
+                case 'deliverable':
+                    message = 'Email is valid and deliverable';
+                    valid = true;
+                    break;
+                case 'accept_all':
+                    message = `Email domain accepts all emails (risky) - Confidence score: ${score}%`;
+                    valid = 'risky';
+                    break;
+                case 'risky':
+                    message = `Email might be valid but is risky - Confidence score: ${score}%`;
+                    valid = 'risky';
+                    break;
+                case 'undeliverable':
+                    message = 'Email is invalid (undeliverable)';
+                    valid = false;
+                    break;
+                case 'unknown':
+                    message = `Email verification inconclusive - Confidence score: ${score}%`;
+                    valid = 'unknown';
+                    break;
+                default:
+                    message = `Email verification result: ${status} - Confidence score: ${score}%`;
+                    valid = 'unknown';
+            }
+            
+            // Add additional details if available
+            const details = [];
+            if (data.data.disposable) details.push('Disposable email detected');
+            if (data.data.gibberish) details.push('Possibly gibberish email');
+            if (!data.data.mx_records) details.push('No MX records found');
+            if (!data.data.smtp_server) details.push('SMTP server issues detected');
+            
+            if (details.length > 0) {
+                message += ' (' + details.join(', ') + ')';
+            }
+            
+            res.json({ 
+                message, 
+                valid, 
+                score: score,
+                details: {
+                    status,
+                    disposable: data.data.disposable,
+                    webmail: data.data.webmail,
+                    mxRecords: data.data.mx_records,
+                    smtpCheck: data.data.smtp_check
+                }
+            });
         } else {
-            console.log('Email is invalid');
-            res.json({ message: 'Email is invalid', valid: false });
+            console.log('Invalid API response format');
+            res.status(500).json({ message: 'Invalid API response format', valid: false });
         }
     } catch (error) {
         console.error('Email verification error:', error);
