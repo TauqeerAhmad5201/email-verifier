@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const path = require('path');
 const helmet = require('helmet');
 const compression = require('compression');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
@@ -17,6 +18,19 @@ app.use(compression());
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+
+// Update your CORS configuration
+// For development, you might want to allow all origins
+app.use(cors());
+
+// For production, be more specific
+/*
+app.use(cors({
+  origin: ['https://your-frontend-domain.com', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+*/
 
 // Add this route handler for the root path
 app.get('/', (req, res) => {
