@@ -29,14 +29,18 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             let resultClass;
             
-            if (data.valid === true) {
+            // Explicit error conditions
+            if (data.valid === false || 
+                data.disposable === true || 
+                (data.details && (!data.details.mxRecords || !data.details.smtpCheck))) {
+                resultClass = 'error';
+                console.log('Setting error class for:', data);
+            } else if (data.valid === true) {
                 resultClass = 'success';
             } else if (data.valid === 'risky') {
                 resultClass = 'warning';
-            } else if (data.valid === 'unknown') {
-                resultClass = 'info';
             } else {
-                resultClass = 'error';
+                resultClass = 'info';
             }
             
             displayResult(data.message, resultClass);
@@ -45,10 +49,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.details) {
                 const detailsHtml = `
                     <div class="details">
-                        <p>Score: ${data.score || 'N/A'}</p>
-                        ${data.details.disposable ? '<p>⚠️ Disposable email</p>' : ''}
-                        ${data.details.webmail ? '<p>Webmail address</p>' : ''}
-                        ${!data.details.mxRecords ? '<p>⚠️ No MX records</p>' : ''}
+                        <p>${resultClass === 'error' ? '❌' : resultClass === 'warning' ? '⚠️' : '✓'} Score: ${data.score || 'N/A'}</p>
+                        ${data.details.disposable ? `<p class="detail-${resultClass}">⚠️ Disposable email detected</p>` : ''}
+                        ${data.details.webmail ? '<p>📧 Webmail address</p>' : ''}
+                        ${!data.details.mxRecords ? `<p class="detail-error">❌ No MX records found</p>` : ''}
+                        ${!data.details.smtpCheck ? `<p class="detail-error">❌ Failed SMTP check</p>` : ''}
                     </div>
                 `;
                 appendDetails(detailsHtml);
@@ -62,14 +67,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayResult(message, resultClass) {
         const resultsDiv = document.getElementById('results');
-        resultsDiv.textContent = message;
         
-        // Reset classes
-        resultsDiv.classList.remove('success', 'warning', 'error', 'info', 'loading');
+        // First, clear any previous content and classes
+        resultsDiv.innerHTML = '';
+        resultsDiv.className = '';
         
-        // Add appropriate class
+        // Create a strong element for the message
+        const messageElement = document.createElement('strong');
+        messageElement.textContent = message;
+        resultsDiv.appendChild(messageElement);
+        
+        // Add appropriate class - force it to be applied
         if (resultClass) {
             resultsDiv.classList.add(resultClass);
+            console.log('Applied class:', resultClass); // Debug output
+            
+            // For errors, add an extra visual indicator
+            if (resultClass === 'error') {
+                const icon = document.createElement('span');
+                icon.innerHTML = '❌ ';
+                icon.style.color = '#dc3545';
+                resultsDiv.insertBefore(icon, messageElement);
+            }
         }
     }
     
