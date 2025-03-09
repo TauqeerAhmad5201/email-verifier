@@ -1,0 +1,13 @@
+services:
+  email-verifier:
+    build: .
+    container_name: email-verifier
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - EMAIL_API_KEY=${EMAIL_API_KEY}
+    env_file:
+      - ./.env
