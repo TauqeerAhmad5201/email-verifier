@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+  <!-- This is the Font Awesome fa-envelope-circle-check icon -->
+  <path fill="#4a6cf7" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176zm544 0V368c0 8.8 7.2 16 16 16s16-7.2 16-16V233.4c0-7-2.4-13.7-6.7-19.2L544 176zm48.7 32.7L640 255.4V368c0 35.3-28.7 64-64 64s-64-28.7-64-64V255.4l16-16c15.2-15.2 40.6-15.2 55.8 0l8.9 8.9z"/>
+  <circle cx="525" cy="420" r="90" fill="#4a6cf7" stroke="white" stroke-width="8"/>
+  <path d="M506 420l12 12 32-32" stroke="white" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
