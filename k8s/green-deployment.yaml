@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-verifier-green
+  namespace: email-verifier
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: email-verifier
+      version: green
+  template:
+    metadata:
+      labels:
+        app: email-verifier
+        version: green
+    spec:
+      containers:
+      - name: email-verifier
+        image: tauqeerops/email-verifier:modern-ui # Update to the new version

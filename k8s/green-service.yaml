@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-verifier-green
+  namespace: email-verifier
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "false"
+    service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /health
+spec:
+  selector:
+    app: email-verifier
+    version: green
+  ports:
+  - port: 80
+    targetPort: 3000
+  type: LoadBalancer
+  sessionAffinity: None
