@@ -4,13 +4,11 @@ metadata:
   name: email-verifier
   namespace: email-verifier
   annotations:
-    kubernetes.io/ingress.class: "azure/application-gateway"
-    appgw.ingress.kubernetes.io/ssl-redirect: "true"
-    appgw.ingress.kubernetes.io/rewrite-url: "/"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
-  tls:
-  - hosts:
-    - true-mail.com
+  ingressClassName: nginx
   rules:
   - host: true-mail.com
     http:
@@ -21,18 +19,18 @@ spec:
           service:
             name: email-verifier-blue
             port:
-              number: 80
+              number: 3000
       - path: /green
         pathType: Prefix
         backend:
           service:
             name: email-verifier-green
             port:
-              number: 80
+              number: 3000
       - path: /
         pathType: Prefix
         backend:
           service:
             name: email-verifier-blue  # Default route
             port:
-              number: 80
+              number: 3000
