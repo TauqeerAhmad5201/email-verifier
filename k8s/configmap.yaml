@@ -4,5 +4,5 @@ metadata:
   name: email-verifier-config
   namespace: email-verifier
 data:
-  PORT: 3000
+  PORT: "3000"
   NODE_ENV: "production"
