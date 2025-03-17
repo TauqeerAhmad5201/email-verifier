@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-verifier-blue
+  labels:
+    app: email-verifier
+    version: blue
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: email-verifier
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: email-verifier
+        version: blue
+    spec:
+      containers:
+      - name: email-verifier
+        image: tauqeerops/email-verifier:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: email-verifier-config
+        - secretRef:
+            name: email-verifier-secret
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
