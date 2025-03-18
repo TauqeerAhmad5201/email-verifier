@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-deployment
+  labels:
+    app: email-verifier
+    version: green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: email-verifier
+      version: green
+  template:
+    metadata:
+      labels:
+        app: email-verifier
+        version: green
+    spec:
+      containers:
+      - name: email-verifier
+        image: tauqeerops/email-verifier:modern-ui
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets

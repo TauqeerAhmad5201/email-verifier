@@ -10,17 +10,65 @@ const app = express();
 const port = process.env.PORT || 3000;
 const API_KEY = process.env.EMAIL_API_KEY;
 
-// Security middleware
-app.use(helmet());
+// Add graceful shutdown handling
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Performing graceful shutdown...');
+  // Close server and database connections here
+  process.exit(0);
+});
+
+// Configure Helmet with adjusted CSP for local resources
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+            "default-src": ["'self'"],
+            "style-src": ["'self'", "'unsafe-inline'", "https:", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+            "font-src": ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
+            "script-src": ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+            "img-src": ["'self'", "data:", "https:"],
+            "connect-src": ["'self'"]
+        }
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false
+}));
+
 // Compression middleware
 app.use(compression());
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+
+// More selective logging middleware
+app.use((req, res, next) => {
+    // Skip logging for common health check endpoints
+    if (req.path !== '/' || req.path !== '/health') {
+        console.log(`${req.method} ${req.url}`);
+    }
+    next();
+});
+
+// Serve static files with caching headers
+app.use(express.static(path.join(__dirname, 'public'), {
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+        // Remove CORS headers as they're not needed for same-origin requests
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+    }
+}));
+
 app.use(bodyParser.json());
 
-// Add this route handler for the root path
+// Root path handler
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
 });
 
 // Rate limiting (simple version)
@@ -131,6 +179,18 @@ app.post('/verify-email', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Something went wrong!' });
+});
+
+const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+    console.log(`Static files being served from: ${path.join(__dirname, 'public')}`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+    console.error('Server error:', error);
 });

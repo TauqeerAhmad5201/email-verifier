@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-deployment
+  labels:
+    app: email-verifier
+    version: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: email-verifier
+      version: blue  # Make sure this matches the version you want
+  template:
+    metadata:
+      labels:
+        app: email-verifier
+        version: blue  # This should match the selector above
+    spec:
+      containers:
+      - name: email-verifier
+        image: tauqeerops/email-verifier:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep 5"]
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 30

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: production-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: email-verifier
+    version: blue  # Switch between blue/green when needed
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
