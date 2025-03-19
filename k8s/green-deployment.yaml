@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-verifier-green
+  labels:
+    app: email-verifier
+    version: green
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: email-verifier
+      version: green
+  template:
+    metadata:
+      labels:
+        app: email-verifier
+        version: green
+    spec:
+      containers:
+      - name: email-verifier
+        image: tauqeerops/email-verifier:modern-ui  # Updated version
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        envFrom:
+        - configMapRef:
+            name: email-verifier-config
+        - secretRef:
+            name: email-verifier-secrets
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5

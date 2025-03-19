@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: email-verifier-config
+  labels:
+    app: email-verifier
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
