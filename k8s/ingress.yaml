@@ -1,35 +1,36 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: email-verifier-ingress
+  name: app-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
+    appgw.ingress.kubernetes.io/ssl-redirect: "false"
+    appgw.ingress.kubernetes.io/use-private-ip: "false"
+    appgw.ingress.kubernetes.io/cookie-based-affinity: "true"
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"
 spec:
-  ingressClassName: nginx
+  ingressClassName: azure-application-gateway
   rules:
-    - http:
-        paths:
-          - path: /()(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: email-verifier-blue-svc
-                port:
-                  number: 3000
-          - path: /green(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: email-verifier-green-svc
-                port:
-                  number: 3000
-          - path: /blue(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: email-verifier-blue-svc
-                port:
-                  number: 3000
+  - host: true-mail.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: email-verifier-blue-svc
+            port:
+              number: 3000
+      - path: /blue
+        pathType: Prefix
+        backend:
+          service:
+            name: email-verifier-blue-svc
+            port:
+              number: 3000
+      - path: /green
+        pathType: Prefix
+        backend:
+          service:
+            name: email-verifier-green-svc
+            port:
+              number: 3000
