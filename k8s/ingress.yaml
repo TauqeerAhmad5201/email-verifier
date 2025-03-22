@@ -7,12 +7,21 @@ metadata:
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"  # Add this to ensure HTTP works
 spec:
   ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /()(.*)
+          # Add this static files path BEFORE other paths
+          - path: /static(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: email-verifier-blue-svc
+                port:
+                  number: 3000
+          - path: /(.*)
             pathType: ImplementationSpecific
             backend:
               service:

@@ -15,12 +15,12 @@ app.use(helmet());
 // Compression middleware
 app.use(compression());
 // Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
 // Add this route handler for the root path
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Rate limiting (simple version)
