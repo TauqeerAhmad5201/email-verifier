@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verifier</title>
+    <title>Email Verifier | Modern Email Validation Tool</title>
+    <meta name="description" content="Verify email addresses quickly and securely with this modern email verification tool">
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="alternate icon" href="./favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./css/styles.css">
@@ -11,6 +12,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Background elements for visual interest -->
+    <div class="bg-element bg-element-1"></div>
+    <div class="bg-element bg-element-2"></div>
+    
+    <!-- Dark Mode Toggle Button -->
+    <div class="theme-toggle">
+        <div class="toggle-button" id="theme-toggle" aria-label="Toggle dark mode">
+            <div class="toggle-thumb">
+                <i class="toggle-icon fas fa-sun"></i>
+            </div>
+        </div>
+    </div>
+    
     <div class="page-wrapper">
         <div class="container">
             <div class="card">
@@ -24,12 +38,12 @@
                 
                 <form id="email-form">
                     <div class="input-group">
+                        <input type="email" id="email" name="email" placeholder="Enter email address" required autocomplete="email">
                         <div class="input-icon">
                             <i class="fas fa-at"></i>
                         </div>
-                        <input type="email" id="email" name="email" placeholder="Enter email address" required>
                     </div>
-                    <button type="submit">
+                    <button type="submit" id="verify-button">
                         <span>Verify Email</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
@@ -42,23 +56,23 @@
                 <div class="feature">
                     <i class="fas fa-shield-alt"></i>
                     <h3>Secure</h3>
-                    <p>Your data is protected</p>
+                    <p>Your data is encrypted and protected with industry-leading security protocols</p>
                 </div>
                 <div class="feature">
                     <i class="fas fa-bolt"></i>
                     <h3>Fast</h3>
-                    <p>Results in seconds</p>
+                    <p>Get accurate verification results in milliseconds with our optimized infrastructure</p>
                 </div>
                 <div class="feature">
                     <i class="fas fa-check-circle"></i>
                     <h3>Accurate</h3>
-                    <p>Reliable verification</p>
+                    <p>Our multi-point verification system ensures reliable and precise results every time</p>
                 </div>
             </div>
         </div>
         
         <footer>
-            <p>© 2025 Email Verifier</p>
+            <p>© 2025 Email Verifier | Made with <i class="fas fa-heart" style="color: #ef4444;"></i> by Tauqeer Ahmad</p>
             <a href="https://buymeacoffee.com/tauqeerahmad" class="coffee-button" target="_blank" rel="noopener">
                 <i class="fas fa-mug-hot"></i>
                 <span>Buy me a coffee</span>
