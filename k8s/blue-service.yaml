@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: email-verifier-blue
-  namespace: email-verifier
+  name: email-verifier-blue-svc
 spec:
+  type: ClusterIP
   selector:
     app: email-verifier
     version: blue
   ports:
-  - port: 3000
-    targetPort: 3000
-  type: ClusterIP 
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
