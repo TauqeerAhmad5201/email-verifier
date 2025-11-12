@@ -2,6 +2,18 @@
 
 This project is a web-based email verifier that allows users to input an email address and verify its validity using a third-party API.
 
+## Hello World Example
+
+A simple Node.js "Hello World" example is included in this project:
+
+```bash
+# Run the Hello World example
+node hello.js
+
+# Or using npm script
+npm run hello
+```
+
 ## Usage Instructions
 
 1. Open the `index.html` file in your web browser.
